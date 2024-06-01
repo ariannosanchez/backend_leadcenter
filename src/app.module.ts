@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { LeadsModule } from './leads/leads.module';
+import { CommonModule } from './common/common.module';
+import { TagCategoriesModule } from './tag-categories/tag-categories.module';
 
 
 @Module({
@@ -16,6 +19,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    LeadsModule,
+    CommonModule,
+    TagCategoriesModule,
   ],
 })
 export class AppModule {}
