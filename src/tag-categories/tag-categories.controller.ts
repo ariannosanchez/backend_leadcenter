@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe } from '@nestjs/common';
 import { TagCategoriesService } from './tag-categories.service';
 import { CreateTagCategoryDto } from './dto/create-tag-category.dto';
 import { UpdateTagCategoryDto } from './dto/update-tag-category.dto';
+import { PaginationDto } from '../common/dtos/pagination.dto';
 
 @Controller('tag-categories')
 export class TagCategoriesController {
@@ -13,8 +14,8 @@ export class TagCategoriesController {
   }
 
   @Get()
-  findAll() {
-    return this.tagCategoriesService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.tagCategoriesService.findAll(paginationDto);
   }
 
   @Get(':id')

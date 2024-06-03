@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LeadsModule } from './leads/leads.module';
 import { CommonModule } from './common/common.module';
 import { TagCategoriesModule } from './tag-categories/tag-categories.module';
+import { StateCategoriesModule } from './state-categories/state-categories.module';
 
 
 @Module({
@@ -19,9 +20,10 @@ import { TagCategoriesModule } from './tag-categories/tag-categories.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    LeadsModule,
     CommonModule,
+    LeadsModule,
     TagCategoriesModule,
+    StateCategoriesModule,
   ],
 })
 export class AppModule {}

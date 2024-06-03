@@ -32,7 +32,6 @@ export class LeadsService {
   }
 
   findAll(paginationDto: PaginationDto) {
-
     const { limit = 10, offset = 0 } = paginationDto;
     return this.leadRepository.find({
       take: limit,

@@ -19,7 +19,7 @@ export class LeadsController {
   }
 
   @Get(':id')
-  asyncfindOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.leadsService.findOne(id);
   }
 
