@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { State } from '../../state/entities/state.entity';
 
 @Entity()
 export class StateCategory {
@@ -10,4 +11,11 @@ export class StateCategory {
         unique: true
     })
     name: string;
+
+    @OneToMany(
+        () => State,
+        (state) => state.stateCategory,
+        { cascade: true }
+    )
+    state: State[];
 }

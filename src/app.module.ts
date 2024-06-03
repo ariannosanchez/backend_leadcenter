@@ -5,6 +5,7 @@ import { LeadsModule } from './leads/leads.module';
 import { CommonModule } from './common/common.module';
 import { TagCategoriesModule } from './tag-categories/tag-categories.module';
 import { StateCategoriesModule } from './state-categories/state-categories.module';
+import { StateModule } from './state/state.module';
 
 
 @Module({
@@ -24,6 +25,7 @@ import { StateCategoriesModule } from './state-categories/state-categories.modul
     LeadsModule,
     TagCategoriesModule,
     StateCategoriesModule,
+    StateModule,
   ],
 })
 export class AppModule {}

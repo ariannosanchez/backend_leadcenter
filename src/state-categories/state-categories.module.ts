@@ -8,7 +8,8 @@ import { StateCategory } from './entities/state-category.entity';
   controllers: [StateCategoriesController],
   providers: [StateCategoriesService],
   imports: [
-    TypeOrmModule.forFeature([ StateCategory ])
-  ]
+    TypeOrmModule.forFeature([StateCategory])
+  ],
+  exports: [TypeOrmModule],
 })
-export class StateCategoriesModule {}
+export class StateCategoriesModule { }
