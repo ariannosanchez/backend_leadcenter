@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreateTagCategoryDto } from './dto/create-tag-category.dto';
 import { UpdateTagCategoryDto } from './dto/update-tag-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagCategory } from './entities/tag-category.entity';
 import { Repository } from 'typeorm';
+import { PaginationDto } from '../common/dtos/pagination.dto';
 
 @Injectable()
 export class TagCategoriesService {
@@ -13,7 +14,7 @@ export class TagCategoriesService {
   constructor(
     @InjectRepository(TagCategory)
     private readonly tagCategoryRepository: Repository<TagCategory>,
-  ){}
+  ) { }
 
   async create(createTagCategoryDto: CreateTagCategoryDto) {
     try {
@@ -26,20 +27,43 @@ export class TagCategoriesService {
     }
   }
 
-  findAll() {
-    return `This action returns all tagCategories`;
+  findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+    return this.tagCategoryRepository.find({
+      take: limit,
+      skip: offset,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tagCategory`;
+  async findOne(id: number) {
+    const tagCategory = await this.tagCategoryRepository.findOneBy({ id });
+
+    if (!tagCategory)
+      throw new NotFoundException(`TagCategory with id ${id} not found`);
+
+    return tagCategory;
   }
 
-  update(id: number, updateTagCategoryDto: UpdateTagCategoryDto) {
-    return `This action updates a #${id} tagCategory`;
+  async update(id: number, updateTagCategoryDto: UpdateTagCategoryDto) {
+    const tagCategory = await this.tagCategoryRepository.preload({
+      id,
+      ...updateTagCategoryDto
+    });
+
+    if (!tagCategory) throw new NotFoundException(`TagCategory with id ${id} not found`);
+
+    try {
+      await this.tagCategoryRepository.save(tagCategory);
+      return tagCategory;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tagCategory`;
+  async remove(id: number) {
+    const tagCategory = await this.findOne(id);
+
+    await this.tagCategoryRepository.remove(tagCategory);
   }
 
   private handleDBExceptions(error: any) {
