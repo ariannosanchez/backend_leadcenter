@@ -1,12 +1,12 @@
-import { IsInt, IsNumber, IsOptional, IsString, MinLength } from "class-validator";
+import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from "class-validator";
 
 export class CreateStateDto {
     @IsString()
-    @MinLength(1)
+    @IsNotEmpty()
     name: string;
 
     @IsInt()
-    @IsOptional()
+    @IsNotEmpty()
     stateCategory: number;
 
 }

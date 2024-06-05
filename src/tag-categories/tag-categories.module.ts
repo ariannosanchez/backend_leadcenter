@@ -9,6 +9,7 @@ import { TagCategory } from './entities/tag-category.entity';
   providers: [TagCategoriesService],
   imports: [
     TypeOrmModule.forFeature([ TagCategory ])
-  ]
+  ],
+  exports: [TypeOrmModule],
 })
 export class TagCategoriesModule {}

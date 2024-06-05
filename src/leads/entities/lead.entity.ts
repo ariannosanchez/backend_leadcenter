@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Tag } from '../../tags/entities/tag.entity';
+import { State } from '../../state/entities/state.entity';
 
 @Entity()
 export class Lead {
@@ -14,7 +16,7 @@ export class Lead {
     })
     lastName: string;
 
-    @Column('text',{
+    @Column('text', {
         nullable: true
     })
     email: string;
@@ -26,4 +28,16 @@ export class Lead {
         unique: true
     })
     slug: string;
+
+    @ManyToOne(
+        () => Tag, (tag) => tag.lead,
+        { eager: true }
+    )
+    tag: Tag;
+
+    @ManyToOne(
+        () => State, (state) => state.lead,
+        { eager: true }
+    )
+    state: State
 }

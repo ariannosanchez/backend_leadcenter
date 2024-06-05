@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
-import { CreateStateCategoryDto } from './dto/create-state-category.dto';
-import { UpdateStateCategoryDto } from './dto/update-state-category.dto';
+import { CreateStateCategoryDto, UpdateStateCategoryDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StateCategory } from './entities/state-category.entity';
 import { Repository } from 'typeorm';

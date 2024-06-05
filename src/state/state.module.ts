@@ -11,6 +11,7 @@ import { StateCategoriesService } from '../state-categories/state-categories.ser
   providers: [StateService, StateCategoriesService],
   imports: [
     TypeOrmModule.forFeature([State]), StateCategoriesModule
-  ]
+  ],
+  exports: [TypeOrmModule]
 })
 export class StateModule { }

@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MinLength } from "class-validator";
+import { IsInt, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
 
 export class CreateLeadDto {
 
@@ -19,5 +19,13 @@ export class CreateLeadDto {
 
     @IsString()
     @IsOptional()
-    slug?:string;
+    slug?: string;
+
+    @IsInt()
+    @IsNotEmpty()
+    tag: number;
+
+    @IsInt()
+    @IsNotEmpty()
+    state: number;
 }

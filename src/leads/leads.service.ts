@@ -2,9 +2,11 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Lead } from './entities/lead.entity';
 import { PaginationDto } from '../common/dtos/pagination.dto';
+import { Tag } from '../tags/entities/tag.entity';
+import { State } from '../state/entities/state.entity';
 
 @Injectable()
 export class LeadsService {
@@ -14,21 +16,44 @@ export class LeadsService {
   constructor(
     @InjectRepository(Lead)
     private readonly leadRepository: Repository<Lead>,
+
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
+
+    @InjectRepository(State)
+    private readonly stateRepository: Repository<State>,
+
+    private readonly dataSource: DataSource,
   ) { }
 
   async create(createLeadDto: CreateLeadDto) {
 
+    const tag = await this.tagRepository.findOneBy({
+      id: createLeadDto.tag,
+    });
+
+    if (!tag)
+      throw new NotFoundException(`Tag with id ${createLeadDto.tag} not found`);
+
+    const state = await this.stateRepository.findOneBy({
+      id: createLeadDto.state,
+    });
+
+    if (!state)
+      throw new NotFoundException(`State with id ${createLeadDto.state} not found`);
+
     try {
+      const lead = this.leadRepository.create({
+        ...createLeadDto,
+        tag,
+        state,
+      });
 
-      const lead = this.leadRepository.create(createLeadDto);
-      await this.leadRepository.save(lead);
-
-      return lead;
+      return await this.leadRepository.save(lead);
 
     } catch (error) {
       this.handleDBExceptions(error);
     }
-
   }
 
   findAll(paginationDto: PaginationDto) {
@@ -36,7 +61,7 @@ export class LeadsService {
     return this.leadRepository.find({
       take: limit,
       skip: offset,
-      //TODO: relaciones
+      relations: ['tag', 'state']
     });
   }
 
@@ -51,20 +76,41 @@ export class LeadsService {
 
   async update(id: string, updateLeadDto: UpdateLeadDto) {
 
-    const lead = await this.leadRepository.preload({
-      id,
-      ...updateLeadDto
-    });
+    const { tag, state, ...toUpdate } = updateLeadDto;
 
-    if (!lead) throw new NotFoundException(`Lead with id: ${id} not found`);
+    const lead = await this.leadRepository.preload({ id, ...toUpdate });
+
+    if (!lead) throw new NotFoundException(`Lead with id ${id} not found`);
+
+    //Create query runner
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
     try {
-      await this.leadRepository.save(lead);
-      return lead;
-
+      if (tag) {
+        
+      }
     } catch (error) {
-      this.handleDBExceptions(error);
+      
     }
+
+    // const lead = await this.leadRepository.preload({
+    //   id,
+    //   ...updateLeadDto
+    // });
+
+    // if (!lead) throw new NotFoundException(`Lead with id: ${id} not found`);
+
+    // try {
+    //   await this.leadRepository.save(lead);
+    //   return lead;
+
+    // } catch (error) {
+    //   this.handleDBExceptions(error);
+    // }
+
+
 
   }
 
