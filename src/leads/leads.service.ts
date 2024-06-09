@@ -76,42 +76,89 @@ export class LeadsService {
 
   async update(id: string, updateLeadDto: UpdateLeadDto) {
 
-    const { tag, state, ...toUpdate } = updateLeadDto;
+    // const { tag, state, ...toUpdate } = updateLeadDto;
 
-    const lead = await this.leadRepository.preload({ id, ...toUpdate });
+    // const lead = await this.leadRepository.preload({ id, ...toUpdate });
 
-    if (!lead) throw new NotFoundException(`Lead with id ${id} not found`);
+    // if (!lead) throw new NotFoundException(`Lead with id ${id} not found`);
 
-    //Create query runner
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      if (tag) {
-        
-      }
-    } catch (error) {
-      
-    }
-
-    // const lead = await this.leadRepository.preload({
-    //   id,
-    //   ...updateLeadDto
-    // });
-
-    // if (!lead) throw new NotFoundException(`Lead with id: ${id} not found`);
+    // const queryRunner = this.dataSource.createQueryRunner();
+    // await queryRunner.connect();
+    // await queryRunner.startTransaction();
 
     // try {
-    //   await this.leadRepository.save(lead);
+    //   if (tag) {
+    //     const tagId = await queryRunner.manager.findOne(Tag, {
+    //       where: { id: tag },
+    //     });
+
+    //     if (!tag) throw new NotFoundException(`Tag with id ${tag} not found`);
+
+    //     lead.tag = tagId;
+    //   }
+
+    //   if (state) {
+    //     const stateId = await queryRunner.manager.findOne(State, {
+    //       where: { id: state },
+    //     });
+
+    //     if (!state) throw new NotFoundException(`State with id ${state} not found`);
+
+    //     lead.state = stateId;
+    //   }
+
+    //   await queryRunner.manager.save(lead);
+    //   await queryRunner.commitTransaction();
+    //   await queryRunner.release();
+
     //   return lead;
 
     // } catch (error) {
+    //   await queryRunner.rollbackTransaction();
+    //   await queryRunner.release();
+
     //   this.handleDBExceptions(error);
     // }
 
 
+    // const lead = await this.leadRepository.findOneBy({ id });
 
+    // if (!lead) throw new NotFoundException(`Tag with id ${id} not found`)
+
+    // let tag;
+
+    // if (updateLeadDto.tag) {
+    //   tag = await this.tagRepository.findOneBy({
+    //     id: updateLeadDto.tag,
+    //   });
+
+    //   if (!tag) throw new NotFoundException(`Tag with id ${updateLeadDto.tag} not found`);
+    // }
+
+    // let state;
+
+    // if (updateLeadDto.state) {
+    //   state = await this.stateRepository.findOneBy({
+    //     id: updateLeadDto.state,
+    //   });
+
+    //   if (!state) throw new NotFoundException(`State with id ${updateLeadDto.state} not found`);
+    // }
+
+    // try {
+
+    //   const updateLead = await this.leadRepository.save({
+    //     ...lead,
+    //     ...updateLeadDto,
+    //     tag,
+    //     state,
+    //   });
+
+    //   return await this.leadRepository.save(updateLead);
+
+    // } catch (error) {
+    //   this.handleDBExceptions(error);
+    // }
   }
 
   async remove(id: string) {
@@ -125,6 +172,7 @@ export class LeadsService {
       throw new BadRequestException(error.detail);
 
     this.logger.error(error);
+    console.log(error);
     throw new InternalServerErrorException('Unexpected error, check server log');
   }
 }

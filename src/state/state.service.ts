@@ -74,18 +74,18 @@ export class StateService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
+    
+    if (stateCategory) {
+      const category = await queryRunner.manager.findOne(StateCategory, {
+        where: { id: stateCategory },
+      });
 
+      if (!category) throw new NotFoundException(`State category with id ${stateCategory} not found`);
+
+      state.stateCategory = category;
+    }
     try {
-      if (stateCategory) {
-        const category = await queryRunner.manager.findOne(StateCategory, {
-          where: { id: stateCategory },
-        });
-
-        if (!category) throw new NotFoundException(`State category with id ${id} not found`);
-
-        state.stateCategory = category;
-      }
-
+    
       await queryRunner.manager.save(state);
 
       await queryRunner.commitTransaction();
