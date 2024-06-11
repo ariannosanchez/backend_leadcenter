@@ -3,6 +3,8 @@ import { TagsService } from './tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { PaginationDto } from '../common/dtos/pagination.dto';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { ValidRoles } from '../auth/interfaces/valid-roles';
 
 @Controller('tags')
 export class TagsController {
@@ -14,6 +16,7 @@ export class TagsController {
   }
 
   @Get()
+  @Auth(ValidRoles.admin)
   findAll(@Query() paginationDto: PaginationDto) {
     return this.tagsService.findAll(paginationDto);
   }

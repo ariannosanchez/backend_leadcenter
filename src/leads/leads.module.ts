@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Lead } from './entities/lead.entity';
 import { TagsModule } from '../tags/tags.module';
 import { StateModule } from '../state/state.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   controllers: [LeadsController],
@@ -13,6 +14,7 @@ import { StateModule } from '../state/state.module';
     TypeOrmModule.forFeature([Lead]),
     TagsModule,
     StateModule,
+    AuthModule,
   ],
   exports: [TypeOrmModule],
 })

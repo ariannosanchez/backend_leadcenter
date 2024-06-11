@@ -7,6 +7,7 @@ import { TagCategoriesModule } from './tag-categories/tag-categories.module';
 import { StateCategoriesModule } from './state-categories/state-categories.module';
 import { StateModule } from './state/state.module';
 import { TagsModule } from './tags/tags.module';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -28,6 +29,7 @@ import { TagsModule } from './tags/tags.module';
     StateCategoriesModule,
     StateModule,
     TagsModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

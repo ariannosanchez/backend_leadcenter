@@ -3,14 +3,21 @@ import { LeadsService } from './leads.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
 import { PaginationDto } from '../common/dtos/pagination.dto';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { GetUser } from 'src/auth/decorators';
+import { User } from '../auth/entities/user.entity';
 
 @Controller('leads')
+@Auth()
 export class LeadsController {
   constructor(private readonly leadsService: LeadsService) { }
 
   @Post()
-  create(@Body() createLeadDto: CreateLeadDto) {
-    return this.leadsService.create(createLeadDto);
+  create(
+    @Body() createLeadDto: CreateLeadDto,
+    @GetUser() user: User,
+  ) {
+    return this.leadsService.create(createLeadDto, user);
   }
 
   @Get()
