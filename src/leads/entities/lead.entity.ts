@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Tag } from '../../tags/entities/tag.entity';
-import { State } from '../../state/entities/state.entity';
 import { User } from '../../auth/entities/user.entity';
+import { Stage } from '../../stages/entities/stage.entity';
 
 @Entity()
 export class Lead {
@@ -37,10 +37,10 @@ export class Lead {
     tag: Tag;
 
     @ManyToOne(
-        () => State, (state) => state.lead,
+        () => Stage, (stage) => stage.lead,
         { eager: true }
     )
-    state: State;
+    stage: Stage;
 
     @ManyToOne(
         () => User,

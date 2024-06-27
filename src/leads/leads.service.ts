@@ -6,8 +6,8 @@ import { DataSource, Repository } from 'typeorm';
 import { Lead } from './entities/lead.entity';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { Tag } from '../tags/entities/tag.entity';
-import { State } from '../state/entities/state.entity';
 import { User } from '../auth/entities/user.entity';
+import { Stage } from '../stages/entities/stage.entity';
 
 @Injectable()
 export class LeadsService {
@@ -21,8 +21,8 @@ export class LeadsService {
     @InjectRepository(Tag)
     private readonly tagRepository: Repository<Tag>,
 
-    @InjectRepository(State)
-    private readonly stateRepository: Repository<State>,
+    @InjectRepository(Stage)
+    private readonly stageRepository: Repository<Stage>,
 
     private readonly dataSource: DataSource,
   ) { }
@@ -36,18 +36,18 @@ export class LeadsService {
     if (!tag)
       throw new NotFoundException(`Tag with id ${createLeadDto.tag} not found`);
 
-    const state = await this.stateRepository.findOneBy({
-      id: createLeadDto.state,
+    const stage = await this.stageRepository.findOneBy({
+      id: createLeadDto.stage,
     });
 
-    if (!state)
-      throw new NotFoundException(`State with id ${createLeadDto.state} not found`);
+    if (!stage)
+      throw new NotFoundException(`Stage with id ${createLeadDto.stage} not found`);
 
     try {
       const lead = this.leadRepository.create({
         ...createLeadDto,
         tag,
-        state,
+        stage,
         user,
       });
 
@@ -63,7 +63,7 @@ export class LeadsService {
     return this.leadRepository.find({
       take: limit,
       skip: offset,
-      relations: ['tag', 'state']
+      relations: ['tag', 'stage']
     });
   }
 
@@ -92,14 +92,14 @@ export class LeadsService {
       if (!tag) throw new NotFoundException(`Tag with id ${updateLeadDto.tag} not found`);
     }
 
-    let state: State;
+    let stage: Stage;
 
-    if (updateLeadDto.state) {
-      state = await this.stateRepository.findOneBy({
-        id: updateLeadDto.state,
+    if (updateLeadDto.stage) {
+      stage = await this.stageRepository.findOneBy({
+        id: updateLeadDto.stage,
       });
 
-      if (!state) throw new NotFoundException(`State with id ${updateLeadDto.state} not found`);
+      if (!stage) throw new NotFoundException(`State with id ${updateLeadDto.stage} not found`);
     }
 
     try {
@@ -108,7 +108,7 @@ export class LeadsService {
         ...lead,
         ...updateLeadDto,
         tag,
-        state,
+        stage,
       });
 
       return await this.leadRepository.save(updateLead);

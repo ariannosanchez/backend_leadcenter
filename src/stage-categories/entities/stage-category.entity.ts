@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { State } from '../../state/entities/state.entity';
+import { Stage } from '../../stages/entities/stage.entity';
 
 @Entity()
-export class StateCategory {
+export class StageCategory {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -10,12 +10,12 @@ export class StateCategory {
     @Column('text', {
         unique: true
     })
-    name: string;
+    name:string;
 
     @OneToMany(
-        () => State,
-        (state) => state.stateCategory,
+        () => Stage,
+        (stage) => stage.stageCategory,
         { cascade: true }
     )
-    state: State[];
+    stage: Stage[];
 }

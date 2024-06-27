@@ -24,6 +24,14 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
+  @Get('check-status')
+  @Auth()
+  checkAuthStatus(
+    @GetUser() user: User
+  ) {
+    return this.authService.checkAuthStatus(user);
+  }
+
   @Get('private')
   @UseGuards(AuthGuard())
   testingPrivateRoute(
@@ -50,7 +58,7 @@ export class AuthController {
   // @SetMetadata('roles', ['admin', 'super-user'])
 
   @Get('private2')
-  @RoleProtected( ValidRoles.admin, ValidRoles.user )
+  @RoleProtected(ValidRoles.admin, ValidRoles.user)
   @UseGuards(AuthGuard(), UserRoleGuard)
   privateRoute2(
     @GetUser() user: User

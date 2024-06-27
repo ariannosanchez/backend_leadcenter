@@ -4,10 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LeadsModule } from './leads/leads.module';
 import { CommonModule } from './common/common.module';
 import { TagCategoriesModule } from './tag-categories/tag-categories.module';
-import { StateCategoriesModule } from './state-categories/state-categories.module';
-import { StateModule } from './state/state.module';
 import { TagsModule } from './tags/tags.module';
 import { AuthModule } from './auth/auth.module';
+import { StagesModule } from './stages/stages.module';
+import { StageCategoriesModule } from './stage-categories/stage-categories.module';
 
 
 @Module({
@@ -26,10 +26,10 @@ import { AuthModule } from './auth/auth.module';
     CommonModule,
     LeadsModule,
     TagCategoriesModule,
-    StateCategoriesModule,
-    StateModule,
     TagsModule,
     AuthModule,
+    StagesModule,
+    StageCategoriesModule,
   ],
 })
 export class AppModule {}

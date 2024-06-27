@@ -4,8 +4,8 @@ import { LeadsController } from './leads.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Lead } from './entities/lead.entity';
 import { TagsModule } from '../tags/tags.module';
-import { StateModule } from '../state/state.module';
 import { AuthModule } from '../auth/auth.module';
+import { StagesModule } from '../stages/stages.module';
 
 @Module({
   controllers: [LeadsController],
@@ -13,7 +13,7 @@ import { AuthModule } from '../auth/auth.module';
   imports: [
     TypeOrmModule.forFeature([Lead]),
     TagsModule,
-    StateModule,
+    StagesModule,
     AuthModule,
   ],
   exports: [TypeOrmModule],

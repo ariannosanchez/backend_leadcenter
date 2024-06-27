@@ -48,6 +48,13 @@ export class AuthService {
 
   }
 
+  async checkAuthStatus(user: User) {
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id })
+    };
+  }
+
   private getJwtToken(payload: JwtPayload) {
 
     const token = this.jwtService.sign(payload);
@@ -62,7 +69,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true, id: true } //!OJO!
+      select: { email: true, password: true, roles: true, fullName:true, id: true } //!OJO!
     });
 
     if (!user)

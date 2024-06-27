@@ -27,5 +27,5 @@ export class CreateLeadDto {
 
     @IsInt()
     @IsNotEmpty()
-    state: number;
+    stage: number;
 }
