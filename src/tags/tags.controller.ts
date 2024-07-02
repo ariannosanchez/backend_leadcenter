@@ -1,11 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
+import { Auth } from '../auth/decorators/auth.decorator';
+import { ValidRoles } from '../auth/interfaces/valid-roles';
+
 import { TagsService } from './tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { PaginationDto } from '../common/dtos/pagination.dto';
-import { Auth } from '../auth/decorators/auth.decorator';
-import { ValidRoles } from '../auth/interfaces/valid-roles';
 
+@ApiTags('Tags')
 @Controller('tags')
 export class TagsController {
   constructor(private readonly tagsService: TagsService) { }

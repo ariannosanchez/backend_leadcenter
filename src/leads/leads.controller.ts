@@ -1,18 +1,26 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { LeadsService } from './leads.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
 import { PaginationDto } from '../common/dtos/pagination.dto';
+
 import { Auth } from '../auth/decorators/auth.decorator';
 import { GetUser } from 'src/auth/decorators';
 import { User } from '../auth/entities/user.entity';
+import { Lead } from './entities/lead.entity';
 
+@ApiTags('Leads')
 @Controller('leads')
 @Auth()
 export class LeadsController {
   constructor(private readonly leadsService: LeadsService) { }
 
   @Post()
+  @ApiResponse({ status: 201, description: 'Stage Category was created', type: Lead })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Token related.' })
   create(
     @Body() createLeadDto: CreateLeadDto,
     @GetUser() user: User,

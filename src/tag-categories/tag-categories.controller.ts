@@ -1,9 +1,12 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
 import { TagCategoriesService } from './tag-categories.service';
 import { CreateTagCategoryDto } from './dto/create-tag-category.dto';
 import { UpdateTagCategoryDto } from './dto/update-tag-category.dto';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 
+@ApiTags('Tag Categories')
 @Controller('tag-categories')
 export class TagCategoriesController {
   constructor(private readonly tagCategoriesService: TagCategoriesService) {}

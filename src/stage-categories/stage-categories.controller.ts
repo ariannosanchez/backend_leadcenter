@@ -1,10 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { Auth } from '../auth/decorators/auth.decorator';
+
 import { StageCategoriesService } from './stage-categories.service';
 import { CreateStageCategoryDto } from './dto/create-stage-category.dto';
 import { UpdateStageCategoryDto } from './dto/update-stage-category.dto';
 import { PaginationDto } from '../common/dtos/pagination.dto';
-import { Auth } from '../auth/decorators/auth.decorator';
+import { StageCategory } from './entities/stage-category.entity';
 
+@ApiTags('Stage Categories')
 @Controller('stage-categories')
 @Auth()
 export class StageCategoriesController {

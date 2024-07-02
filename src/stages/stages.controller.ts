@@ -1,10 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
+import { Auth } from '../auth/decorators/auth.decorator';
+
 import { StagesService } from './stages.service';
 import { CreateStageDto } from './dto/create-stage.dto';
 import { UpdateStageDto } from './dto/update-stage.dto';
-import { Auth } from '../auth/decorators/auth.decorator';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 
+@ApiTags('Stages')
 @Controller('stages')
 @Auth()
 export class StagesController {
