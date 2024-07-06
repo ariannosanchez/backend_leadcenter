@@ -10,6 +10,7 @@ import { Auth } from '../auth/decorators/auth.decorator';
 import { GetUser } from 'src/auth/decorators';
 import { User } from '../auth/entities/user.entity';
 import { Lead } from './entities/lead.entity';
+import { SearchDto } from '../common/dtos/search.dto';
 
 @ApiTags('Leads')
 @Controller('leads')
@@ -26,6 +27,12 @@ export class LeadsController {
     @GetUser() user: User,
   ) {
     return this.leadsService.create(createLeadDto, user);
+  }
+
+  
+  @Get('search')
+  findBySearch(@Query() searchDto: SearchDto) {
+    return this.leadsService.findMany(searchDto);
   }
 
   @Get()
@@ -47,4 +54,5 @@ export class LeadsController {
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.leadsService.remove(id);
   }
+
 }

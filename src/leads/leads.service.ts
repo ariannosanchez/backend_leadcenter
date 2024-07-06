@@ -1,13 +1,14 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException, Query } from '@nestjs/common';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import { Lead } from './entities/lead.entity';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { Tag } from '../tags/entities/tag.entity';
 import { User } from '../auth/entities/user.entity';
 import { Stage } from '../stages/entities/stage.entity';
+import { SearchDto } from '../common/dtos/search.dto';
 
 @Injectable()
 export class LeadsService {
@@ -67,6 +68,24 @@ export class LeadsService {
     });
   }
 
+  async findMany(searchDto: SearchDto) {
+    const { name, lastName, phone, stageId, tagId, limit = 10, offset = 0 } = searchDto;
+    const conditions: FindOptionsWhere<Lead> | FindOptionsWhere<Lead>[] = {
+      ...(name ? { name } : {}),
+      ...(lastName ? { lastName } : {}),
+      ...(phone ? { phone } : {}),
+      ...(stageId ? { stage: { id: stageId } } : {}),
+      ...(tagId ? { tag: { id: tagId } } : {}),
+    };
+
+    return await this.leadRepository.find({
+      where: conditions,
+      take: limit,
+      skip: offset,
+      relations: ['tag', 'stage']
+    });
+  }
+
   async findOne(id: string) {
     const lead = await this.leadRepository.findOneBy({ id });
 
@@ -75,7 +94,7 @@ export class LeadsService {
 
     return lead;
   }
-
+  
   async update(id: string, updateLeadDto: UpdateLeadDto) {
 
     const lead = await this.leadRepository.findOneBy({ id });

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 
 import { Tag } from '../../tags/entities/tag.entity';
@@ -68,7 +68,7 @@ export class Lead {
     @ApiProperty()
     @ManyToOne(
         () => Stage, (stage) => stage.lead,
-        { eager: true }
+        // { eager: true }
     )
     stage: Stage;
 
