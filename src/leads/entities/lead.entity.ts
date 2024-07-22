@@ -53,10 +53,6 @@ export class Lead {
         description: 'Lead Slug',
         uniqueItems: true,
     })
-    @Column('text', {
-        unique: true
-    })
-    slug: string;
 
     @ApiProperty()
     @ManyToOne(
@@ -68,7 +64,7 @@ export class Lead {
     @ApiProperty()
     @ManyToOne(
         () => Stage, (stage) => stage.lead,
-        // { eager: true }
+        { eager: true }
     )
     stage: Stage;
 

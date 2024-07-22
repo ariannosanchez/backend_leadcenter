@@ -44,6 +44,8 @@ export class LeadsService {
     if (!stage)
       throw new NotFoundException(`Stage with id ${createLeadDto.stage} not found`);
 
+    
+
     try {
       const lead = this.leadRepository.create({
         ...createLeadDto,
@@ -80,7 +82,7 @@ export class LeadsService {
 
     return await this.leadRepository.find({
       where: conditions,
-      take: limit,
+      take: limit, 
       skip: offset,
       relations: ['tag', 'stage']
     });

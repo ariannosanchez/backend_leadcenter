@@ -30,11 +30,6 @@ export class CreateLeadDto {
     phone: string;
 
     @ApiProperty()
-    @IsString()
-    @IsOptional()
-    slug?: string;
-
-    @ApiProperty()
     @IsInt()
     @IsNotEmpty()
     tag: number;
