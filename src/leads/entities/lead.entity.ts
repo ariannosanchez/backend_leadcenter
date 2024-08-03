@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 
 import { Tag } from '../../tags/entities/tag.entity';
@@ -47,6 +47,12 @@ export class Lead {
     })
     @Column('text')
     phone: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAd: Date;
 
     @ApiProperty({
         example: 'john_doe',

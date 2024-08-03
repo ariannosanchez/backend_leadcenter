@@ -28,7 +28,6 @@ export class LeadsController {
   ) {
     return this.leadsService.create(createLeadDto, user);
   }
-
   
   @Get('search')
   findBySearch(@Query() searchDto: SearchDto) {
@@ -38,6 +37,11 @@ export class LeadsController {
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
     return this.leadsService.findAll(paginationDto);
+  }
+
+  @Get('funnel-report')
+  getFunnelReport() {
+    return this.leadsService.funneelReport();
   }
 
   @Get(':id')

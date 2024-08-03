@@ -191,6 +191,18 @@ export class LeadsService {
     await this.leadRepository.remove(lead);
   }
 
+  async funneelReport() {
+    const stages = await this.stageRepository.find();
+    const report = [];
+
+    for ( const stage of stages ) {
+      const count = await this.leadRepository.count({ where: { stage: { id: stage.id } } });
+      report.push({ stage: stage.name, count });
+    }
+
+    return report;
+  }
+
   private handleDBExceptions(error: any) {
     if (error.code === '23505')
       throw new BadRequestException(error.detail);
