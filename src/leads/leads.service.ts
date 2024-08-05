@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
+import { Between, DataSource, FindOptionsWhere, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { Lead } from './entities/lead.entity';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { Tag } from '../tags/entities/tag.entity';
@@ -71,17 +71,19 @@ export class LeadsService {
   }
 
   async findMany(searchDto: SearchDto) {
-    const { name, lastName, phone, stageId, tagId, limit = 10, offset = 0 } = searchDto;
+    const { startDate, endDate, stageId, tagId, limit = 10, offset = 0 } = searchDto;
     const conditions: FindOptionsWhere<Lead> | FindOptionsWhere<Lead>[] = {
-      ...(name ? { name } : {}),
-      ...(lastName ? { lastName } : {}),
-      ...(phone ? { phone } : {}),
       ...(stageId ? { stage: { id: stageId } } : {}),
       ...(tagId ? { tag: { id: tagId } } : {}),
     };
 
+    if ( startDate && endDate ) {
+      conditions.createdAt = Between( startDate, endDate );
+    }
+
     return await this.leadRepository.find({
       where: conditions,
+      order: { createdAt: 'DESC'},
       take: limit, 
       skip: offset,
       relations: ['tag', 'stage']

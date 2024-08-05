@@ -1,7 +1,25 @@
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { IsOptional, IsPositive, Min } from "class-validator";
 
 export class SearchDto {
+
+    @IsOptional()
+    @Type(() => Date)
+    @Transform(({ value }) => {
+        const date = new Date(value);
+        date.setHours(0, 0, 0, 0);
+        return date;
+    }, { toClassOnly: true })
+    startDate?: Date;
+
+    @IsOptional()
+    @Type(() => Date)
+    @Transform(({ value }) => {
+        const date = new Date(value);
+        date.setHours(23, 59, 59, 999);
+        return date;
+    }, { toClassOnly: true })
+    endDate?: Date;
 
     @IsOptional()
     @Type(() => String)

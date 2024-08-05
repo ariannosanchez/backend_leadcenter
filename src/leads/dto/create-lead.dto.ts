@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
+import { Type } from "class-transformer";
+import { IsDate, IsInt, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
 
 export class CreateLeadDto {
 
@@ -28,6 +29,11 @@ export class CreateLeadDto {
     @ApiProperty()
     @IsString()
     phone: string;
+
+    @IsOptional()
+    @Type(() => Date)
+    @IsDate()
+    createdAt?: Date;
 
     @ApiProperty()
     @IsInt()
