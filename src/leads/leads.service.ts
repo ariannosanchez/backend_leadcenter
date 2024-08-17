@@ -199,10 +199,22 @@ export class LeadsService {
 
     for ( const stage of stages ) {
       const count = await this.leadRepository.count({ where: { stage: { id: stage.id } } });
-      report.push({ stage: stage.name, count });
+      report.push({ stage: stage, count });
     }
 
     return report;
+  }
+
+  async findByStage(stageId: number) {
+    const stage = await this.stageRepository.findOneBy({ id: stageId });
+    if ( !stage ) throw new NotFoundException(`Stage with id ${stageId} not found`);
+
+    const leads = await this.leadRepository.find({
+      where: { stage: { id: stageId } },
+      relations: ['tag', 'user', 'stage'],
+    })
+    
+    return leads;
   }
 
   private handleDBExceptions(error: any) {

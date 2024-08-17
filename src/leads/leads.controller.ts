@@ -44,6 +44,11 @@ export class LeadsController {
     return this.leadsService.funneelReport();
   }
 
+  @Get('stage/:stageId')
+  findByStage(@Param('stageId') stageId: number) {
+    return this.leadsService.findByStage(stageId);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.leadsService.findOne(id);
