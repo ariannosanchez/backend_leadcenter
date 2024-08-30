@@ -30,18 +30,13 @@ export class CreateLeadDto {
     @IsString()
     phone: string;
 
-    @IsOptional()
-    @Type(() => Date)
-    @IsDate()
-    createdAt?: Date;
+    @ApiProperty()
+    @IsInt()
+    @IsNotEmpty()
+    tagId: number;
 
     @ApiProperty()
     @IsInt()
     @IsNotEmpty()
-    tag: number;
-
-    @ApiProperty()
-    @IsInt()
-    @IsNotEmpty()
-    stage: number;
+    stageId: number;
 }

@@ -52,7 +52,7 @@ export class Lead {
     createdAt: Date;
 
     @UpdateDateColumn()
-    updatedAd: Date;
+    updatedAt: Date;
 
     @ApiProperty({
         example: 'john_doe',

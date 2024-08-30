@@ -31,18 +31,18 @@ export class LeadsService {
   async create(createLeadDto: CreateLeadDto, user: User) {
 
     const tag = await this.tagRepository.findOneBy({
-      id: createLeadDto.tag,
+      id: createLeadDto.tagId,
     });
 
     if (!tag)
-      throw new NotFoundException(`Tag with id ${createLeadDto.tag} not found`);
+      throw new NotFoundException(`Tag with id ${createLeadDto.tagId} not found`);
 
     const stage = await this.stageRepository.findOneBy({
-      id: createLeadDto.stage,
+      id: createLeadDto.stageId,
     });
 
     if (!stage)
-      throw new NotFoundException(`Stage with id ${createLeadDto.stage} not found`);
+      throw new NotFoundException(`Stage with id ${createLeadDto.stageId} not found`);
 
     
 
@@ -70,24 +70,55 @@ export class LeadsService {
     });
   }
 
-  async findMany(searchDto: SearchDto) {
-    const { startDate, endDate, stageId, tagId, limit = 10, offset = 0 } = searchDto;
-    const conditions: FindOptionsWhere<Lead> | FindOptionsWhere<Lead>[] = {
-      ...(stageId ? { stage: { id: stageId } } : {}),
-      ...(tagId ? { tag: { id: tagId } } : {}),
-    };
+  // async findMany(searchDto: SearchDto) {
+  //   const { startDate, endDate, stageId, tagId, limit = 10, offset = 0 } = searchDto;
+  //   const conditions: FindOptionsWhere<Lead> | FindOptionsWhere<Lead>[] = {
+  //     ...(stageId ? { stage: { id: stageId } } : {}),
+  //     ...(tagId ? { tag: { id: tagId } } : {}),
+  //   };
 
-    if ( startDate && endDate ) {
-      conditions.createdAt = Between( startDate, endDate );
+  //   if ( startDate && endDate ) {
+  //     conditions.createdAt = Between( startDate, endDate );
+  //   }
+
+  //   return await this.leadRepository.find({
+  //     where: conditions,
+  //     order: { createdAt: 'DESC'},
+  //     take: limit, 
+  //     skip: offset,
+  //     relations: ['tag', 'stage']
+  //   });
+  // }
+
+  async findMany(searchDto: SearchDto) {
+    const { limit = 10, offset = 0, tagId, stageId, startDate, endDate } = searchDto;
+
+    const queryBuilder = this.leadRepository.createQueryBuilder('lead')
+      .leftJoinAndSelect('lead.tag', 'tag')
+      .leftJoinAndSelect('tag.tagCategory', 'tagCategory')
+      .leftJoinAndSelect('lead.stage', 'stage')
+      .leftJoinAndSelect('stage.stageCategory', 'stageCategory')
+      .leftJoinAndSelect('lead.user', 'user')
+      .take(limit)
+      .skip(offset);
+
+    if (tagId) {
+      queryBuilder.andWhere('lead.tagId = :tagId', { tagId });
     }
 
-    return await this.leadRepository.find({
-      where: conditions,
-      order: { createdAt: 'DESC'},
-      take: limit, 
-      skip: offset,
-      relations: ['tag', 'stage']
-    });
+    if (stageId) {
+      queryBuilder.andWhere('lead.stageId = :stageId', { stageId });
+    }
+
+    if (startDate && endDate) {
+      queryBuilder.andWhere('lead.createdAt BETWEEN :startDate AND :endDate', { startDate, endDate });
+    } else if (startDate) {
+      queryBuilder.andWhere('lead.createdAt >= :startDate', { startDate });
+    } else if (endDate) {
+      queryBuilder.andWhere('lead.createdAt <= :endDate', { endDate });
+    }
+
+    return await queryBuilder.getMany();
   }
 
   async findOne(id: string) {
@@ -99,91 +130,89 @@ export class LeadsService {
     return lead;
   }
   
+  // async update(id: string, updateLeadDto: UpdateLeadDto) {
+
+  //   const lead = await this.leadRepository.findOneBy({ id });
+
+  //   if (!lead) throw new NotFoundException(`Lead with id ${id} not found`);
+
+  //   let tag: Tag;
+
+  //   if (updateLeadDto.tagId) {
+  //     tag = await this.tagRepository.findOneBy({
+  //       id: updateLeadDto.tagId,
+  //     });
+
+  //     if (!tag) throw new NotFoundException(`Tag with id ${updateLeadDto.tagId} not found`);
+  //   }
+
+  //   let stage: Stage;
+
+  //   if (updateLeadDto.stageId) {
+  //     stage = await this.stageRepository.findOneBy({
+  //       id: updateLeadDto.stageId,
+  //     });
+
+  //     if (!stage) throw new NotFoundException(`State with id ${updateLeadDto.stageId} not found`);
+  //   }
+
+  //   try {
+
+  //     const updateLead = await this.leadRepository.save({
+  //       ...lead,
+  //       ...updateLeadDto,
+  //       tag,
+  //       stage,
+  //     });
+
+  //     return await this.leadRepository.save(updateLead);
+
+  //   } catch (error) {
+  //     this.handleDBExceptions(error);
+  //   }
+
+  // }
+
   async update(id: string, updateLeadDto: UpdateLeadDto) {
 
     const lead = await this.leadRepository.findOneBy({ id });
 
     if (!lead) throw new NotFoundException(`Lead with id ${id} not found`);
 
-    let tag: Tag;
+    const updates: Partial<Lead> = { ...updateLeadDto };
 
-    if (updateLeadDto.tag) {
-      tag = await this.tagRepository.findOneBy({
-        id: updateLeadDto.tag,
+    if (updateLeadDto.tagId) {
+      const tag = await this.tagRepository.findOneBy({
+        id: updateLeadDto.tagId,
       });
 
-      if (!tag) throw new NotFoundException(`Tag with id ${updateLeadDto.tag} not found`);
+      if (!tag) throw new NotFoundException(`Tag with id ${updateLeadDto.tagId} not found`);
+    
+      updates.tag = tag;
     }
 
-    let stage: Stage;
-
-    if (updateLeadDto.stage) {
-      stage = await this.stageRepository.findOneBy({
-        id: updateLeadDto.stage,
+    if (updateLeadDto.stageId) {
+      const stage = await this.stageRepository.findOneBy({
+        id: updateLeadDto.stageId,
       });
 
-      if (!stage) throw new NotFoundException(`State with id ${updateLeadDto.stage} not found`);
+      if (!stage) throw new NotFoundException(`State with id ${updateLeadDto.stageId} not found`);
+    
+      updates.stage = stage;
     }
 
     try {
 
       const updateLead = await this.leadRepository.save({
         ...lead,
-        ...updateLeadDto,
-        tag,
-        stage,
+        ...updates,
       });
 
-      return await this.leadRepository.save(updateLead);
+      return updateLead;
 
     } catch (error) {
       this.handleDBExceptions(error);
     }
-
-    // const { tag, state, ...toUpdate } = updateLeadDto;
-
-    // const lead = await this.leadRepository.preload({ id, ...toUpdate });
-
-    // if (!lead) throw new NotFoundException(`Lead with id ${id} not found`);
-
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-
-    // try {
-    //   if (tag) {
-    //     const tagId = await queryRunner.manager.findOne(Tag, {
-    //       where: { id: tag },
-    //     });
-
-    //     if (!tag) throw new NotFoundException(`Tag with id ${tag} not found`);
-
-    //     lead.tag = tagId;
-    //   }
-
-    //   if (state) {
-    //     const stateId = await queryRunner.manager.findOne(State, {
-    //       where: { id: state },
-    //     });
-
-    //     if (!state) throw new NotFoundException(`State with id ${state} not found`);
-
-    //     lead.state = stateId;
-    //   }
-
-    //   await queryRunner.manager.save(lead);
-    //   await queryRunner.commitTransaction();
-    //   await queryRunner.release();
-
-    //   return lead;
-
-    // } catch (error) {
-    //   await queryRunner.rollbackTransaction();
-    //   await queryRunner.release();
-
-    //   this.handleDBExceptions(error);
-    // }
-
 
   }
 
@@ -207,14 +236,13 @@ export class LeadsService {
 
   async findByStage(stageId: number) {
     const stage = await this.stageRepository.findOneBy({ id: stageId });
-    if ( !stage ) throw new NotFoundException(`Stage with id ${stageId} not found`);
+    if ( !stage ) 
+      throw new NotFoundException(`Stage with id ${stageId} not found`);
 
-    const leads = await this.leadRepository.find({
+    return this.leadRepository.find({
       where: { stage: { id: stageId } },
       relations: ['tag', 'user', 'stage'],
     })
-    
-    return leads;
   }
 
   private handleDBExceptions(error: any) {
